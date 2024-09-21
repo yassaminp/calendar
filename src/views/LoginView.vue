@@ -4,23 +4,26 @@
             <div class="col-10 col-md-8 col-lg-5 col-xl-3 mx-auto">
                 <div class="card">
                     <div class="card-body">
-                        <div class="h3 mb-4">{{ $t('Login') }}</div>
+                        <div class="h3 mb-4">{{ $t("Login") }}</div>
 
                         <LoginForm />
                     </div>
                 </div>
             </div>
         </div>
+        <VDatePicker />
     </main>
 </template>
 
 <script>
-    // Components
-    import LoginForm from "@/components/login/LoginForm.vue";
+// Components
+import LoginForm from "@/components/login/LoginForm.vue";
+import VDatePicker from "@/components/form/datePicker/VDatePicker.vue";
 
-    export default {
-        components: {
-            LoginForm
-        }
-    }
+export default {
+    components: {
+        LoginForm,
+        VDatePicker,
+    },
+};
 </script>
