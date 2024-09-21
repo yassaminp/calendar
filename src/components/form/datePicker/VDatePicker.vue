@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import moment from "moment";
 import jMoment from "moment-jalaali";
 import "moment-hijri";
@@ -29,10 +29,16 @@ export default {
     setup() {
         const selectedCalendarType = ref("miladi");
         const weekNames = ref([]);
+        const timestamp = ref(moment());
+
+        const calendarInfo = reactive({
+            startDay: "",
+            days: "",
+            month: "",
+            year: "",
+        });
 
         const generateCalendar = () => {
-            let firstDay, totalDays, firstWeekday;
-
             switch (selectedCalendarType.value) {
                 case "shamsi": {
                     jMoment.loadPersian({ dialect: "persian-modern" });
@@ -40,45 +46,49 @@ export default {
                     const persianWeekdays = [...jMoment.weekdays()];
                     const saturday = persianWeekdays.pop();
                     persianWeekdays.unshift(saturday);
-
                     weekNames.value = persianWeekdays;
-                    firstDay = jMoment().startOf("month");
-                    totalDays = firstDay.daysInMonth();
-                    firstWeekday = firstDay.day();
+
                     break;
                 }
 
                 case "ghamari": {
                     moment.locale("ar-sa");
                     weekNames.value = moment.weekdays();
-
-                    firstDay = moment().startOf("month");
-                    totalDays = firstDay.daysInMonth();
-                    firstWeekday = firstDay.day();
                     break;
                 }
 
                 case "miladi": {
                     moment.locale("en");
-
                     weekNames.value = moment.weekdays();
-                    firstDay = moment().startOf("month");
-                    totalDays = firstDay.daysInMonth();
-                    firstWeekday = firstDay.day();
+
                     break;
                 }
 
                 default: {
                     weekNames.value = moment.weekdays();
-                    firstDay = moment().startOf("month");
-                    totalDays = firstDay.daysInMonth();
-                    firstWeekday = firstDay.day();
+
                     break;
                 }
             }
-            console.log("dddd", totalDays, firstWeekday, firstDay);
         };
 
+        watch(selectedCalendarType, (type) => {
+            Object.assign(calendarInfo, {
+                startDay:
+                    type === "shamsi"
+                        ? jMoment(timestamp.value).startOf("jMonth").day()
+                        : type === "miladi"
+                        ? moment(timestamp.value).startOf("month").day()
+                        : moment(timestamp.value).startOf("month").day(),
+                month:
+                    type === "shamsi"
+                        ? jMoment(timestamp.value).jMonth()
+                        : type === "miladi"
+                        ? moment(timestamp.value).month()
+                        : moment(timestamp.value).month(),
+            });
+            console.log(calendarInfo.startDay);
+        });
         onMounted(() => {
             generateCalendar();
         });
