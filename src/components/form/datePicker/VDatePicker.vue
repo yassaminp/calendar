@@ -12,13 +12,21 @@
                     {{ weekName }}
                 </li>
             </ul>
-            <div class="container"></div>
+            {{ weekDays }}
+            <div class="container">
+                <div v-for="(week, weekIndex) in weekDays" :key="weekIndex" class="row">
+                    <div v-for="(day, dayIndex) in week" :key="dayIndex" class="col">
+                        <span v-if="day">{{ day }}</span>
+                        <span v-else class="empty-slot">-</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, onMounted, reactive, watch, computed } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import moment from "moment";
 import jMoment from "moment-jalaali";
 import "moment-hijri";
@@ -96,12 +104,13 @@ export default {
                         ? moment(timestamp.value).year()
                         : moment(timestamp.value).year(),
             });
+            console.log(calendarInfo.startDay);
         });
 
-        const fullCalendarDays = computed(() => {
+        const fullCalendarDays = () => {
             const totalSlots = 42;
             const daysArray = [];
-
+            console.log("sdf", calendarInfo.startDay);
             for (let i = 0; i < calendarInfo.startDay; i++) {
                 daysArray.push(null);
             }
@@ -115,6 +124,10 @@ export default {
             }
 
             return daysArray;
+        };
+
+        watch([() => calendarInfo.startDay, () => calendarInfo.days], () => {
+            fullCalendarDays();
         });
 
         onMounted(() => {
