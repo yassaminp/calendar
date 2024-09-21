@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1">
         <div class="d-flex flex-column">
-            <select name="calenderType" v-model="selectedCalendarType" @change="generateWeekNames" class="align-self-end">
+            <select name="calenderType" v-model="selectedCalendarType" @change="generateCalendar" class="align-self-end">
                 <option value="ghamari">قمری</option>
                 <option value="shamsi">شمسی</option>
                 <option value="miladi">میلادی</option>
@@ -12,6 +12,10 @@
                     {{ weekName }}
                 </li>
             </ul>
+
+            <div class="container">
+                <div v-for="(week, index) in 6" :key="index" class="row"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -26,46 +30,63 @@ export default {
         const selectedCalendarType = ref("miladi");
         const weekNames = ref([]);
 
-        const generateWeekNames = () => {
+        const generateCalendar = () => {
+            let firstDay, totalDays, firstWeekday;
+
             switch (selectedCalendarType.value) {
                 case "shamsi": {
                     jMoment.loadPersian({ dialect: "persian-modern" });
                     moment.locale("fa");
                     const persianWeekdays = [...jMoment.weekdays()];
-                    if (persianWeekdays.length) {
-                        const saturday = persianWeekdays.pop();
-                        persianWeekdays.unshift(saturday);
-                    }
+                    const saturday = persianWeekdays.pop();
+                    persianWeekdays.unshift(saturday);
+
                     weekNames.value = persianWeekdays;
+                    firstDay = jMoment().startOf("month");
+                    totalDays = firstDay.daysInMonth();
+                    firstWeekday = firstDay.day();
                     break;
                 }
 
                 case "ghamari": {
                     moment.locale("ar-sa");
                     weekNames.value = moment.weekdays();
+
+                    firstDay = moment().startOf("month");
+                    totalDays = firstDay.daysInMonth();
+                    firstWeekday = firstDay.day();
                     break;
                 }
 
                 case "miladi": {
                     moment.locale("en");
+
                     weekNames.value = moment.weekdays();
+                    firstDay = moment().startOf("month");
+                    totalDays = firstDay.daysInMonth();
+                    firstWeekday = firstDay.day();
                     break;
                 }
 
                 default: {
                     weekNames.value = moment.weekdays();
+                    firstDay = moment().startOf("month");
+                    totalDays = firstDay.daysInMonth();
+                    firstWeekday = firstDay.day();
                     break;
                 }
             }
+            console.log("dddd", totalDays, firstWeekday, firstDay);
         };
+
         onMounted(() => {
-            generateWeekNames();
+            generateCalendar();
         });
 
         return {
             selectedCalendarType,
             weekNames,
-            generateWeekNames,
+            generateCalendar,
         };
     },
 };
