@@ -12,12 +12,12 @@
                     {{ weekName }}
                 </li>
             </ul>
-            {{ weekDays }}
+            {{ fullCalendarDays }}
             <div class="container">
                 <div v-for="(week, weekIndex) in weekDays" :key="weekIndex" class="row">
-                    <div v-for="(day, dayIndex) in week" :key="dayIndex" class="col">
+                    <div v-for="(day, dayIndex) in week" :key="dayIndex" class="col d-flex align-items-center justify-content-end">
                         <span v-if="day">{{ day }}</span>
-                        <span v-else class="empty-slot">-</span>
+                        <span v-else class="empty-slot"></span>
                     </div>
                 </div>
             </div>
@@ -35,6 +35,7 @@ export default {
         const selectedCalendarType = ref(null);
         const weekNames = ref([]);
         const timestamp = ref(moment());
+        const weekDays = ref([]);
 
         const calendarInfo = reactive({
             startDay: "",
@@ -105,6 +106,8 @@ export default {
                         : moment(timestamp.value).year(),
             });
             console.log(calendarInfo.startDay);
+
+            fullCalendarDays();
         });
 
         const fullCalendarDays = () => {
@@ -122,13 +125,12 @@ export default {
             while (daysArray.length < totalSlots) {
                 daysArray.push(null);
             }
-
-            return daysArray;
+            weekDays.value = [];
+            for (let i = 0; i < daysArray.length; i += 7) {
+                weekDays.value.push(daysArray.slice(i, i + 7));
+            }
+            return weekDays.value;
         };
-
-        watch([() => calendarInfo.startDay, () => calendarInfo.days], () => {
-            fullCalendarDays();
-        });
 
         onMounted(() => {
             generateCalendar();
@@ -139,7 +141,7 @@ export default {
             selectedCalendarType,
             weekNames,
             generateCalendar,
-            fullCalendarDays,
+            weekDays,
         };
     },
 };
