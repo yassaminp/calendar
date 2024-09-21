@@ -12,10 +12,14 @@
                     {{ weekName }}
                 </li>
             </ul>
-            {{ fullCalendarDays }}
             <div class="container">
                 <div v-for="(week, weekIndex) in weekDays" :key="weekIndex" class="row">
-                    <div v-for="(day, dayIndex) in week" :key="dayIndex" class="col d-flex align-items-center justify-content-end">
+                    <div
+                        v-for="(day, dayIndex) in week"
+                        :key="dayIndex"
+                        class="col d-flex align-items-center justify-content-end"
+                        :class="dayIndex === 6 ? 'text-danger' : ''"
+                    >
                         <span v-if="day">{{ day }}</span>
                         <span v-else class="empty-slot"></span>
                     </div>
@@ -77,15 +81,20 @@ export default {
                 }
             }
         };
+        const calculateStartDay = (type) => {
+            if (type === "shamsi") {
+                const startDay = jMoment(timestamp.value).startOf("jMonth").day();
+                return (startDay + 1) % 7;
+            } else if (type === "miladi") {
+                return moment(timestamp.value).startOf("month").day();
+            } else {
+                return moment(timestamp.value).startOf("month").day();
+            }
+        };
 
         watch(selectedCalendarType, (type) => {
             Object.assign(calendarInfo, {
-                startDay:
-                    type === "shamsi"
-                        ? jMoment(timestamp.value).startOf("jMonth").day()
-                        : type === "miladi"
-                        ? moment(timestamp.value).startOf("month").day()
-                        : moment(timestamp.value).startOf("month").day(),
+                startDay: calculateStartDay(type),
                 days:
                     type === "shamsi"
                         ? jMoment(timestamp.value).daysInMonth()
@@ -105,7 +114,6 @@ export default {
                         ? moment(timestamp.value).year()
                         : moment(timestamp.value).year(),
             });
-            console.log(calendarInfo.startDay);
 
             fullCalendarDays();
         });
