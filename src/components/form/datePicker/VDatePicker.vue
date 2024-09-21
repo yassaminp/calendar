@@ -12,22 +12,19 @@
                     {{ weekName }}
                 </li>
             </ul>
-
-            <div class="container">
-                <div v-for="(week, index) in 6" :key="index" class="row"></div>
-            </div>
+            <div class="container"></div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, onMounted, reactive, watch } from "vue";
+import { ref, onMounted, reactive, watch, computed } from "vue";
 import moment from "moment";
 import jMoment from "moment-jalaali";
 import "moment-hijri";
 export default {
     setup() {
-        const selectedCalendarType = ref("miladi");
+        const selectedCalendarType = ref(null);
         const weekNames = ref([]);
         const timestamp = ref(moment());
 
@@ -80,23 +77,56 @@ export default {
                         : type === "miladi"
                         ? moment(timestamp.value).startOf("month").day()
                         : moment(timestamp.value).startOf("month").day(),
+                days:
+                    type === "shamsi"
+                        ? jMoment(timestamp.value).daysInMonth()
+                        : type === "miladi"
+                        ? moment(timestamp.value).daysInMonth()
+                        : moment(timestamp.value).daysInMonth(),
                 month:
                     type === "shamsi"
                         ? jMoment(timestamp.value).jMonth()
                         : type === "miladi"
                         ? moment(timestamp.value).month()
                         : moment(timestamp.value).month(),
+                year:
+                    type === "shamsi"
+                        ? jMoment(timestamp.value).jYear()
+                        : type === "miladi"
+                        ? moment(timestamp.value).year()
+                        : moment(timestamp.value).year(),
             });
-            console.log(calendarInfo.startDay);
         });
+
+        const fullCalendarDays = computed(() => {
+            const totalSlots = 42;
+            const daysArray = [];
+
+            for (let i = 0; i < calendarInfo.startDay; i++) {
+                daysArray.push(null);
+            }
+
+            for (let i = 1; i <= calendarInfo.days; i++) {
+                daysArray.push(i);
+            }
+
+            while (daysArray.length < totalSlots) {
+                daysArray.push(null);
+            }
+
+            return daysArray;
+        });
+
         onMounted(() => {
             generateCalendar();
+            selectedCalendarType.value = "miladi";
         });
 
         return {
             selectedCalendarType,
             weekNames,
             generateCalendar,
+            fullCalendarDays,
         };
     },
 };
