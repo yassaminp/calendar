@@ -1,7 +1,7 @@
 <template>
     <div
         class="d-flex align-items-center justify-content-center p-1 rounded"
-        :class="{ 'border border-danger bg-light ': isSelected, 'text-danger': holiday }"
+        :class="{ 'border border-danger bg-light ': isSelected, 'text-danger': weekend }"
     >
         {{ day }}
     </div>
@@ -24,7 +24,7 @@ export default {
             default: "",
             required: false,
         },
-        holiday: {
+        weekend: {
             type: Boolean,
             default: false,
         },

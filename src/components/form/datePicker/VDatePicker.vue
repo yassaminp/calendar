@@ -45,10 +45,11 @@
                                 today.date === day && today.month === calendarInfo.month && today.year === calendarInfo.year,
                             'text-light bg-dark':
                                 pickedDate.day === day && pickedDate.month === calendarInfo.month && pickedDate.year === calendarInfo.year,
+                            'text-danger': isHoliday(day, calendarInfo.month, calendarInfo.year),
                         }"
                     >
                         <div v-if="day" class="cursor-pointer" @click="selectDate(day)">
-                            <VDate :day="day" :holiday="dayIndex === 6 ? true : false" />
+                            <VDate :day="day" :weekend="dayIndex === 6 ? true : false" />
                         </div>
                         <span v-else class="empty-slot"></span>
                     </div>
@@ -94,6 +95,11 @@ export default {
             month: "",
             year: "",
         });
+
+        const holidays = ref([
+            { year: 1403, month: 1, day: 1, type: "shamsi" },
+            { year: 2024, month: 8, day: 25, type: "miladi" },
+        ]);
 
         const generateCalendar = () => {
             switch (selectedCalendarType.value) {
@@ -246,6 +252,15 @@ export default {
             pickedDate.year = calendarInfo.year;
         };
 
+        const isHoliday = (day, month, year) => {
+            if (!day) return false;
+
+            return holidays.value.some(
+                (holiday) =>
+                    holiday.day === day && holiday.month === month && holiday.year === year && holiday.type === selectedCalendarType.value
+            );
+        };
+
         onMounted(() => {
             generateCalendar();
             selectedCalendarType.value = "miladi";
@@ -266,6 +281,7 @@ export default {
             handleYearSelection,
             pickedDate,
             goToToday,
+            isHoliday,
         };
     },
 };
