@@ -1,9 +1,7 @@
 <template>
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-            <span class="bi-caret-down-fill cursor-pointer px-2"></span>
-        </button>
-        <div class="dropdown-menu">
+    <div class="dropdown mx-3">
+        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" @click="toggleDropdown"></button>
+        <div class="dropdown-menu" v-if="toggleDropdown">
             <span v-for="(year, i) in availableYears" :key="i">{{ year }} </span>
         </div>
     </div>
@@ -18,12 +16,19 @@ export default {
             type: Object,
             required: true,
         },
+        showDropdown: {
+            type: Boolean,
+            default: false,
+        },
     },
-    setup(props) {
+    setup(props, context) {
+        const toggleDropdown = () => {
+            context.emit("toggleDropdown");
+        };
         const availableYears = computed(() => {
             const years = [];
-            const currentYear = props.calendarInfo.year; // Current year in the selected calendar type
-            const range = 50; // You can adjust the range
+            const currentYear = props.calendarInfo.year;
+            const range = 50;
             for (let i = currentYear - range; i <= currentYear + range; i++) {
                 years.push(i);
             }
@@ -32,6 +37,7 @@ export default {
 
         return {
             availableYears,
+            toggleDropdown,
         };
     },
 };
