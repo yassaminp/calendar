@@ -1,11 +1,23 @@
 <template>
     <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1">
-        <div class="d-flex flex-column">
-            <select name="calenderType" v-model="selectedCalendarType" @change="generateCalendar" class="align-self-end">
-                <option value="ghamari">قمری</option>
-                <option value="shamsi">شمسی</option>
-                <option value="miladi">میلادی</option>
-            </select>
+        <div class="d-flex flex-column container">
+            <div class="mb-5 align-self-end">
+                <select name="calenderType" v-model="selectedCalendarType" @change="generateCalendar">
+                    <option value="ghamari">قمری</option>
+                    <option value="shamsi">شمسی</option>
+                    <option value="miladi">میلادی</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mb-3 mx-2">
+                <div>
+                    {{ calendarInfo.month }}
+                    <input type="" />
+                </div>
+                <div>
+                    <button @click="goPrevMonth">&lt;</button>
+                    <button @click="goNextMonth">&gt;</button>
+                </div>
+            </div>
 
             <ul class="d-flex align-items-center justify-content-center">
                 <li v-for="(weekName, index) in weekNames" :key="index" class="px-2">
@@ -121,7 +133,7 @@ export default {
         const fullCalendarDays = () => {
             const totalSlots = 42;
             const daysArray = [];
-            console.log("sdf", calendarInfo.startDay);
+
             for (let i = 0; i < calendarInfo.startDay; i++) {
                 daysArray.push(null);
             }
@@ -150,6 +162,7 @@ export default {
             weekNames,
             generateCalendar,
             weekDays,
+            calendarInfo,
         };
     },
 };
