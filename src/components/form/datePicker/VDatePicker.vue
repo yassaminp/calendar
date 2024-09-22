@@ -157,6 +157,24 @@ export default {
             return weekDays.value;
         };
 
+        const goPrevMonth = () => {
+            if (selectedCalendarType.value === "shamsi") {
+                timestamp.value = jMoment(timestamp.value).subtract(1, "jMonth");
+            } else {
+                timestamp.value = moment(timestamp.value).subtract(1, "month");
+            }
+            updateCalendar(selectedCalendarType.value);
+        };
+
+        const goNextMonth = () => {
+            if (selectedCalendarType.value === "shamsi") {
+                timestamp.value = jMoment(timestamp.value).add(1, "jMonth");
+            } else {
+                timestamp.value = moment(timestamp.value).add(1, "month");
+            }
+            updateCalendar(selectedCalendarType.value);
+        };
+
         onMounted(() => {
             generateCalendar();
             selectedCalendarType.value = "miladi";
@@ -171,6 +189,8 @@ export default {
             moment,
             jMoment,
             timestamp,
+            goNextMonth,
+            goPrevMonth,
         };
     },
 };
