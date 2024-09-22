@@ -12,16 +12,16 @@
                 <div>
                     {{ selectedCalendarType === "shamsi" ? jMoment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
                     - {{ calendarInfo.year }}
-                    <input type="" />
                 </div>
                 <div>
                     <button @click="goPrevMonth">&lt;</button>
+                    {{ calendarInfo.today }}
                     <button @click="goNextMonth">&gt;</button>
                 </div>
             </div>
 
-            <ul class="d-flex align-items-center justify-content-center">
-                <li v-for="(weekName, index) in weekNames" :key="index" class="px-2">
+            <ul class="d-flex align-items-center justify-content-between">
+                <li v-for="(weekName, index) in weekNames" :key="index" class="px-1">
                     {{ weekName }}
                 </li>
             </ul>
@@ -30,10 +30,10 @@
                     <div
                         v-for="(day, dayIndex) in week"
                         :key="dayIndex"
-                        class="col d-flex align-items-center justify-content-end"
-                        :class="dayIndex === 6 ? 'text-danger' : ''"
+                        class="col d-flex align-items-center justify-content-center"
+                        :class="{ 'text-danger': dayIndex === 6, 'border border-dark rounded': calendarInfo.today === day }"
                     >
-                        <span v-if="day">{{ day }}</span>
+                        <span v-if="day" @click="selectDate()">{{ day }}</span>
                         <span v-else class="empty-slot"></span>
                     </div>
                 </div>
@@ -59,13 +59,14 @@ export default {
             days: "",
             month: "",
             year: "",
+            today: "",
         });
 
         const generateCalendar = () => {
             switch (selectedCalendarType.value) {
                 case "shamsi": {
-                    jMoment.loadPersian({ dialect: "persian-modern" });
                     moment.locale("fa");
+                    jMoment.loadPersian({ dialect: "persian-modern" });
                     const persianWeekdays = [...jMoment.weekdays()];
                     const saturday = persianWeekdays.pop();
                     persianWeekdays.unshift(saturday);
@@ -130,6 +131,8 @@ export default {
                         : type === "miladi"
                         ? moment(timestamp.value).year()
                         : moment(timestamp.value).year(),
+
+                today: type === "shamsi" ? jMoment().jDate() : type === "miladi" ? moment().date() : moment().date(),
             });
 
             fullCalendarDays();
