@@ -6,12 +6,16 @@
             @click="toggleDropdown"
             aria-haspopup="true"
             aria-expanded="false"
-        >
-            Select Year
-        </button>
-        {{ isDropdownVisible }}
-        <div class="dropdown-menu" v-if="isDropdownVisible" aria-labelledby="dropdownMenuLink" style="display: block">
-            <span v-for="(year, i) in availableYears" :key="i" class="dropdown-item" @click="selectYear(year)">
+        ></button>
+
+        <div class="dropdown-menu scrollable-dropdown" v-if="isDropdownVisible" aria-labelledby="dropdownMenuLink" style="display: block">
+            <span
+                v-for="(year, i) in availableYears"
+                :key="i"
+                class="dropdown-item"
+                @click="selectYear(year)"
+                :class="{ ' border border-dark rounded ': calendarInfo.year === year }"
+            >
                 {{ year }}
             </span>
         </div>
@@ -60,8 +64,9 @@ export default {
 };
 </script>
 
-<style>
-.dropdown-menu[style] {
-    display: block !important;
+<style scoped>
+.scrollable-dropdown {
+    max-height: 180px;
+    overflow-y: auto;
 }
 </style>
