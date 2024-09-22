@@ -12,6 +12,7 @@
                 <div>
                     {{ selectedCalendarType === "shamsi" ? moment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
                     - {{ calendarInfo.year }}
+                    <VYearsDrop :calendarInfo="calendarInfo" />
                 </div>
                 <div class="buttons-wrapper d-flex align-items-center justify-content-between">
                     <button @click="goPrevMonth">&lt;</button>
@@ -52,9 +53,11 @@ import { ref, onMounted, reactive, watch } from "vue";
 import moment from "moment-jalaali";
 import "moment-hijri";
 import VDate from "./VDate.vue";
+import VYearsDrop from "./VYearsDrop.vue";
 export default {
     components: {
         VDate,
+        VYearsDrop,
     },
     setup() {
         const selectedCalendarType = ref(null);
