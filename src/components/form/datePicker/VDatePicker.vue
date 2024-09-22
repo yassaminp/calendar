@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
+    <div class="d-flex align-items-center flex-column justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
         <div class="d-flex flex-column">
             <div class="mb-3 d-flex align-items-center justify-content-between">
                 <button type="button" class="btn btn-secondary btn-sm" @click="goToToday">برو به امروز</button>
@@ -33,6 +33,7 @@
                     {{ weekName }}
                 </li>
             </ul>
+
             <div class="container">
                 <div v-for="(week, weekIndex) in weekDays" :key="weekIndex" class="row">
                     <div
@@ -54,6 +55,7 @@
                 </div>
             </div>
         </div>
+        {{ pickedDate.day ? moment(`${pickedDate.year}-${pickedDate.month}-${pickedDate.day}`, "YYYY-MM-DD").format("YYYY/MM/DD") : "" }}
     </div>
 </template>
 
@@ -74,7 +76,7 @@ export default {
         const timestamp = ref(moment());
         const weekDays = ref([]);
         const pickedDate = reactive({
-            type: null,
+            type: "",
             day: null,
             month: null,
             year: null,
