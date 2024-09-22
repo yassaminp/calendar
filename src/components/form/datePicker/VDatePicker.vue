@@ -12,7 +12,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     {{ selectedCalendarType === "shamsi" ? moment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
                     - {{ calendarInfo.year }}
-                    <VYearsDrop :calendarInfo="calendarInfo" :showDropdown="showDropdown" @toggleDropdown="showDropdown = !showDropdown" />
+                    <VYearsDrop :calendarInfo="calendarInfo" @yearSelected="handleYearSelection" />
                 </div>
                 <div class="buttons-wrapper d-flex align-items-center justify-content-between">
                     <button @click="goPrevMonth">&lt;</button>
@@ -64,7 +64,6 @@ export default {
         const weekNames = ref([]);
         const timestamp = ref(moment());
         const weekDays = ref([]);
-        const showDropdown = ref(false);
 
         const calendarInfo = reactive({
             startDay: "",
@@ -225,7 +224,6 @@ export default {
             goPrevMonth,
             today,
             selectDate,
-            showDropdown,
         };
     },
 };

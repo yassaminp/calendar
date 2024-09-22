@@ -1,14 +1,25 @@
 <template>
     <div class="dropdown mx-3">
-        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" @click="toggleDropdown"></button>
-        <div class="dropdown-menu" v-if="toggleDropdown">
-            <span v-for="(year, i) in availableYears" :key="i">{{ year }} </span>
+        <button
+            class="btn btn-secondary dropdown-toggle btn-sm"
+            type="button"
+            @click="toggleDropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+        >
+            Select Year
+        </button>
+        {{ isDropdownVisible }}
+        <div class="dropdown-menu" v-if="isDropdownVisible" aria-labelledby="dropdownMenuLink" style="display: block">
+            <span v-for="(year, i) in availableYears" :key="i" class="dropdown-item" @click="selectYear(year)">
+                {{ year }}
+            </span>
         </div>
     </div>
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 export default {
     props: {
@@ -16,15 +27,19 @@ export default {
             type: Object,
             required: true,
         },
-        showDropdown: {
-            type: Boolean,
-            default: false,
-        },
     },
-    setup(props, context) {
+    setup(props, { emit }) {
+        const isDropdownVisible = ref(false);
+
         const toggleDropdown = () => {
-            context.emit("toggleDropdown");
+            isDropdownVisible.value = !isDropdownVisible.value;
         };
+
+        const selectYear = (year) => {
+            emit("yearSelected", year);
+            isDropdownVisible.value = false;
+        };
+
         const availableYears = computed(() => {
             const years = [];
             const currentYear = props.calendarInfo.year;
@@ -36,11 +51,17 @@ export default {
         });
 
         return {
-            availableYears,
+            isDropdownVisible,
             toggleDropdown,
+            selectYear,
+            availableYears,
         };
     },
 };
 </script>
 
-<style></style>
+<style>
+.dropdown-menu[style] {
+    display: block !important;
+}
+</style>
