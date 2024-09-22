@@ -10,7 +10,8 @@
             </div>
             <div class="d-flex align-items-center justify-content-between mb-3 mx-2">
                 <div>
-                    {{ calendarInfo.month }}
+                    {{ selectedCalendarType === "shamsi" ? jMoment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
+                    - {{ calendarInfo.year }}
                     <input type="" />
                 </div>
                 <div>
@@ -105,6 +106,10 @@ export default {
         };
 
         watch(selectedCalendarType, (type) => {
+            updateCalendar(type);
+        });
+
+        const updateCalendar = (type) => {
             Object.assign(calendarInfo, {
                 startDay: calculateStartDay(type),
                 days:
@@ -128,7 +133,7 @@ export default {
             });
 
             fullCalendarDays();
-        });
+        };
 
         const fullCalendarDays = () => {
             const totalSlots = 42;
@@ -163,6 +168,9 @@ export default {
             generateCalendar,
             weekDays,
             calendarInfo,
+            moment,
+            jMoment,
+            timestamp,
         };
     },
 };
