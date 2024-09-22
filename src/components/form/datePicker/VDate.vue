@@ -3,7 +3,7 @@
         class="d-flex align-items-center justify-content-center p-1 rounded"
         :class="{ 'border border-danger bg-light ': isSelected, 'text-danger': weekend || holiday }"
     >
-        <span class="bi-exclamation" v-if="holiday"> </span>
+        <span v-if="specialDay" :class="specialDay"> </span>
         {{ day }}
     </div>
 </template>

@@ -52,7 +52,7 @@
                                 :day="day"
                                 :weekend="dayIndex === 6 ? true : false"
                                 :holiday="isHoliday(day, calendarInfo.month, calendarInfo.year) ? true : false"
-                                :specialDay=""
+                                :specialDay="isSpecial(day, calendarInfo.month) ? 'bi-award' : ''"
                             />
                         </div>
                         <span v-else class="empty-slot"></span>
@@ -109,7 +109,7 @@ export default {
             { year: 2024, month: 9, day: 20, type: "miladi" },
             { year: 2024, month: 11, day: 2, type: "miladi" },
         ]);
-        const birthday = ref({ year: 1403, month: 1, day: 1, type: "shamsi" });
+        const birthday = ref({ month: 9, day: 29 });
 
         const generateCalendar = () => {
             switch (selectedCalendarType.value) {
@@ -271,6 +271,12 @@ export default {
             );
         };
 
+        const isSpecial = (day, month) => {
+            if (!day) return false;
+
+            return birthday.value.day === day && birthday.value.month === month;
+        };
+
         onMounted(() => {
             generateCalendar();
             selectedCalendarType.value = "miladi";
@@ -292,6 +298,7 @@ export default {
             pickedDate,
             goToToday,
             isHoliday,
+            isSpecial,
         };
     },
 };
