@@ -1,8 +1,9 @@
 <template>
     <div
         class="d-flex align-items-center justify-content-center p-1 rounded"
-        :class="{ 'border border-danger bg-light ': isSelected, 'text-danger': weekend }"
+        :class="{ 'border border-danger bg-light ': isSelected, 'text-danger': weekend || holiday }"
     >
+        <span class="bi-exclamation" v-if="holiday"> </span>
         {{ day }}
     </div>
 </template>
@@ -27,6 +28,14 @@ export default {
         weekend: {
             type: Boolean,
             default: false,
+        },
+        holiday: {
+            type: Boolean,
+            default: false,
+        },
+        specialDay: {
+            type: String,
+            default: "",
         },
     },
 };
