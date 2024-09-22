@@ -139,6 +139,10 @@ export default {
             updateCalendar(type);
         });
 
+        watch(timestamp, () => {
+            updateCalendar(selectedCalendarType.value);
+        });
+
         const updateCalendar = (type) => {
             Object.assign(calendarInfo, {
                 startDay: calculateStartDay(type),
@@ -205,6 +209,14 @@ export default {
             updateCalendar(selectedCalendarType.value);
         };
 
+        const handleYearSelection = (year) => {
+            calendarInfo.year = year;
+            timestamp.value =
+                selectedCalendarType.value === "shamsi"
+                    ? moment(timestamp.value).jYear(year).format()
+                    : moment(timestamp.value).year(year).format();
+        };
+
         const selectDate = () => {};
 
         onMounted(() => {
@@ -224,6 +236,7 @@ export default {
             goPrevMonth,
             today,
             selectDate,
+            handleYearSelection,
         };
     },
 };
