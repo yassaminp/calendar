@@ -31,7 +31,11 @@
                         v-for="(day, dayIndex) in week"
                         :key="dayIndex"
                         class="col d-flex align-items-center justify-content-center"
-                        :class="{ 'text-danger': dayIndex === 6, 'border border-dark rounded': calendarInfo.today === day }"
+                        :class="{
+                            'text-danger': dayIndex === 6,
+                            'border border-dark rounded':
+                                today.date === day && today.month === calendarInfo.month && today.year === calendarInfo.year,
+                        }"
                     >
                         <span v-if="day" @click="selectDate()">{{ day }}</span>
                         <span v-else class="empty-slot"></span>
@@ -58,7 +62,12 @@ export default {
             days: "",
             month: "",
             year: "",
-            today: "",
+        });
+
+        const today = reactive({
+            date: "",
+            month: "",
+            year: "",
         });
 
         const generateCalendar = () => {
@@ -71,12 +80,19 @@ export default {
                     persianWeekdays.unshift(saturday);
                     weekNames.value = persianWeekdays;
 
+                    today.date = moment(timestamp).jDate();
+                    today.month = moment(timestamp).jMonth();
+                    today.year = moment(timestamp).jYear();
                     break;
                 }
 
                 case "ghamari": {
                     moment.locale("ar-sa");
                     weekNames.value = moment.weekdays();
+
+                    today.date = moment(timestamp).date();
+                    today.month = moment(timestamp).month();
+                    today.year = moment(timestamp).year();
                     break;
                 }
 
@@ -84,12 +100,18 @@ export default {
                     moment.locale("en");
                     weekNames.value = moment.weekdays();
 
+                    today.date = moment(timestamp).date();
+                    today.month = moment(timestamp).month();
+                    today.year = moment(timestamp).year();
+
                     break;
                 }
 
                 default: {
                     weekNames.value = moment.weekdays();
-
+                    today.date = moment(timestamp).date();
+                    today.month = moment(timestamp).month();
+                    today.year = moment(timestamp).year();
                     break;
                 }
             }
@@ -130,8 +152,6 @@ export default {
                         : type === "miladi"
                         ? moment(timestamp.value).year()
                         : moment(timestamp.value).year(),
-
-                today: type === "shamsi" ? moment().jDate() : type === "miladi" ? moment().date() : moment().date(),
             });
 
             fullCalendarDays();
@@ -192,6 +212,7 @@ export default {
             timestamp,
             goNextMonth,
             goPrevMonth,
+            today,
         };
     },
 };
