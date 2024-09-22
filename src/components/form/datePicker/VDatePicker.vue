@@ -17,7 +17,13 @@
             </div>
             <div class="d-flex align-items-center justify-content-between mb-3 mx-2">
                 <div class="d-flex align-items-center justify-content-between">
-                    {{ selectedCalendarType === "shamsi" ? moment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
+                    {{
+                        selectedCalendarType === "shamsi"
+                            ? moment(timestamp).format("jMMMM")
+                            : selectedCalendarType === "miladi"
+                            ? moment(timestamp).format("MMMM")
+                            : hMoment(timestamp).format("iMMMM")
+                    }}
                     - {{ calendarInfo.year }}
                     <VYearsDrop :calendarInfo="calendarInfo" @yearSelected="handleYearSelection" />
                 </div>
@@ -67,7 +73,7 @@
 <script>
 import { ref, onMounted, reactive, watch } from "vue";
 import moment from "moment-jalaali";
-import "moment-hijri";
+import hMoment from "moment-hijri";
 import VDate from "./VDate.vue";
 import VYearsDrop from "./VYearsDrop.vue";
 export default {
@@ -109,7 +115,7 @@ export default {
             { year: 2024, month: 9, day: 20, type: "miladi" },
             { year: 2024, month: 11, day: 2, type: "miladi" },
         ]);
-        const birthday = ref({ month: 9, day: 29 });
+        const birthday = ref({ month: 9, day: 29, type: "miladi" }, { month: 8, day: 8, type: "shamsi" });
 
         const generateCalendar = () => {
             switch (selectedCalendarType.value) {
@@ -129,11 +135,11 @@ export default {
 
                 case "ghamari": {
                     moment.locale("ar-sa");
-                    weekNames.value = moment.weekdays();
+                    weekNames.value = hMoment.weekdays();
 
-                    today.date = moment(timestamp).date();
-                    today.month = moment(timestamp).month();
-                    today.year = moment(timestamp).year();
+                    today.date = hMoment(timestamp).iDate();
+                    today.month = hMoment(timestamp).iMonth();
+                    today.year = hMoment(timestamp).iYear();
                     break;
                 }
 
@@ -164,7 +170,7 @@ export default {
             } else if (type === "miladi") {
                 return moment(timestamp.value).startOf("month").day();
             } else {
-                return moment(timestamp.value).startOf("month").day();
+                return hMoment(timestamp.value).startOf("iMonth").day();
             }
         };
 
@@ -184,19 +190,19 @@ export default {
                         ? moment(timestamp.value).daysInMonth()
                         : type === "miladi"
                         ? moment(timestamp.value).daysInMonth()
-                        : moment(timestamp.value).daysInMonth(),
+                        : hMoment(timestamp.value).daysInMonth(),
                 month:
                     type === "shamsi"
                         ? moment(timestamp.value).jMonth()
                         : type === "miladi"
                         ? moment(timestamp.value).month()
-                        : moment(timestamp.value).month(),
+                        : hMoment(timestamp.value).iMonth(),
                 year:
                     type === "shamsi"
                         ? moment(timestamp.value).jYear()
                         : type === "miladi"
                         ? moment(timestamp.value).year()
-                        : moment(timestamp.value).year(),
+                        : hMoment(timestamp.value).iYear(),
             });
 
             fullCalendarDays();
@@ -227,8 +233,10 @@ export default {
         const goPrevMonth = () => {
             if (selectedCalendarType.value === "shamsi") {
                 timestamp.value = moment(timestamp.value).subtract(1, "jMonth");
-            } else {
+            } else if (selectedCalendarType.value === "miladi") {
                 timestamp.value = moment(timestamp.value).subtract(1, "month");
+            } else {
+                timestamp.value = hMoment(timestamp.value).subtract(1, "iMonth");
             }
             updateCalendar(selectedCalendarType.value);
         };
@@ -236,8 +244,10 @@ export default {
         const goNextMonth = () => {
             if (selectedCalendarType.value === "shamsi") {
                 timestamp.value = moment(timestamp.value).add(1, "jMonth");
-            } else {
+            } else if (selectedCalendarType.value === "miladi") {
                 timestamp.value = moment(timestamp.value).add(1, "month");
+            } else {
+                timestamp.value = hMoment(timestamp.value).add(1, "iMonth");
             }
             updateCalendar(selectedCalendarType.value);
         };
@@ -252,7 +262,9 @@ export default {
             timestamp.value =
                 selectedCalendarType.value === "shamsi"
                     ? moment(timestamp.value).jYear(year).format()
-                    : moment(timestamp.value).year(year).format();
+                    : selectedCalendarType.value === "miladi"
+                    ? moment(timestamp.value).year(year).format()
+                    : hMoment(timestamp.value).iYear(year).format();
         };
 
         const selectDate = (day) => {
@@ -274,7 +286,7 @@ export default {
         const isSpecial = (day, month) => {
             if (!day) return false;
 
-            return birthday.value.day === day && birthday.value.month === month;
+            return birthday.value.day === day && birthday.value.month === month && birthday.value.type === selectedCalendarType.value;
         };
 
         onMounted(() => {
@@ -299,6 +311,7 @@ export default {
             goToToday,
             isHoliday,
             isSpecial,
+            hMoment,
         };
     },
 };
