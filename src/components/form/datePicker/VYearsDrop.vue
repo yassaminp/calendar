@@ -8,13 +8,19 @@
             aria-expanded="false"
         ></button>
 
-        <div class="dropdown-menu scrollable-dropdown" v-if="isDropdownVisible" aria-labelledby="dropdownMenuLink" style="display: block">
+        <div
+            class="dropdown-menu scrollable-dropdown"
+            ref="dropdownMenu"
+            v-if="isDropdownVisible"
+            aria-labelledby="dropdownMenuLink"
+            style="display: block"
+        >
             <span
                 v-for="(year, i) in availableYears"
                 :key="i"
                 class="dropdown-item"
                 @click="selectYear(year)"
-                :class="{ ' border border-dark rounded ': calendarInfo.year === year }"
+                :class="{ ' border border-dark rounded active-year': calendarInfo.year === year }"
             >
                 {{ year }}
             </span>
@@ -23,7 +29,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch, nextTick } from "vue";
 
 export default {
     props: {
@@ -34,6 +40,7 @@ export default {
     },
     setup(props, { emit }) {
         const isDropdownVisible = ref(false);
+        const dropdownMenu = ref(null);
 
         const toggleDropdown = () => {
             isDropdownVisible.value = !isDropdownVisible.value;
@@ -47,18 +54,37 @@ export default {
         const availableYears = computed(() => {
             const years = [];
             const currentYear = props.calendarInfo.year;
-            const range = 50;
+            const range = 100;
             for (let i = currentYear - range; i <= currentYear + range; i++) {
                 years.push(i);
             }
             return years;
         });
 
+        watch(
+            () => isDropdownVisible.value,
+            async (newVal) => {
+                if (newVal) {
+                    await nextTick(); // Wait for the DOM update
+                    if (dropdownMenu.value) {
+                        const currentYearEl = dropdownMenu.value.querySelector(".active-year");
+                        if (currentYearEl) {
+                            currentYearEl.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center",
+                            });
+                        }
+                    }
+                }
+            }
+        );
+
         return {
             isDropdownVisible,
             toggleDropdown,
             selectYear,
             availableYears,
+            dropdownMenu,
         };
     },
 };
