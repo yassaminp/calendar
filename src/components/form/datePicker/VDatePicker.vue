@@ -1,8 +1,15 @@
 <template>
     <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
-        <div class="d-flex flex-column container">
-            <div class="mb-3 align-self-end">
-                <select name="calenderType" class="form-select form-select-sm" v-model="selectedCalendarType" @change="generateCalendar">
+        <div class="d-flex flex-column">
+            <div class="mb-3 d-flex align-items-center justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm">برو به امروز</button>
+                <select
+                    name="calenderType"
+                    class="form-select form-select-sm"
+                    style="max-width: 100px"
+                    v-model="selectedCalendarType"
+                    @change="generateCalendar"
+                >
                     <option value="ghamari">قمری</option>
                     <option value="shamsi">شمسی</option>
                     <option value="miladi">میلادی</option>
