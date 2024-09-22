@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
         <div class="d-flex flex-column">
             <div class="mb-3 d-flex align-items-center justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm">برو به امروز</button>
+                <button type="button" class="btn btn-secondary btn-sm" @click="goToToday">برو به امروز</button>
                 <select
                     name="calenderType"
                     class="form-select form-select-sm"
@@ -224,6 +224,11 @@ export default {
             updateCalendar(selectedCalendarType.value);
         };
 
+        const goToToday = () => {
+            const today = moment();
+            timestamp.value = today;
+        };
+
         const handleYearSelection = (year) => {
             calendarInfo.year = year;
             timestamp.value =
@@ -258,6 +263,7 @@ export default {
             selectDate,
             handleYearSelection,
             pickedDate,
+            goToToday,
         };
     },
 };

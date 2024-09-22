@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown mx-3">
         <button
-            class="btn btn-secondary dropdown-toggle btn-sm"
+            class="btn btn-outline-secondary dropdown-toggle btn-sm"
             type="button"
             @click="toggleDropdown"
             aria-haspopup="true"
