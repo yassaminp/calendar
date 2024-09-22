@@ -1,8 +1,8 @@
 <template>
-    <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1">
+    <div class="d-flex align-items-center justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
         <div class="d-flex flex-column container">
-            <div class="mb-5 align-self-end">
-                <select name="calenderType" v-model="selectedCalendarType" @change="generateCalendar">
+            <div class="mb-3 align-self-end">
+                <select name="calenderType" class="form-select form-select-sm" v-model="selectedCalendarType" @change="generateCalendar">
                     <option value="ghamari">قمری</option>
                     <option value="shamsi">شمسی</option>
                     <option value="miladi">میلادی</option>
@@ -10,12 +10,12 @@
             </div>
             <div class="d-flex align-items-center justify-content-between mb-3 mx-2">
                 <div>
-                    {{ selectedCalendarType === "shamsi" ? jMoment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
+                    {{ selectedCalendarType === "shamsi" ? moment(timestamp).format("jMMMM") : moment(timestamp).format("MMMM") }}
                     - {{ calendarInfo.year }}
                 </div>
-                <div>
+                <div class="buttons-wrapper d-flex align-items-center justify-content-between">
                     <button @click="goPrevMonth">&lt;</button>
-                    {{ calendarInfo.today }}
+
                     <button @click="goNextMonth">&gt;</button>
                 </div>
             </div>
@@ -44,8 +44,7 @@
 
 <script>
 import { ref, onMounted, reactive, watch } from "vue";
-import moment from "moment";
-import jMoment from "moment-jalaali";
+import moment from "moment-jalaali";
 import "moment-hijri";
 export default {
     setup() {
@@ -66,8 +65,8 @@ export default {
             switch (selectedCalendarType.value) {
                 case "shamsi": {
                     moment.locale("fa");
-                    jMoment.loadPersian({ dialect: "persian-modern" });
-                    const persianWeekdays = [...jMoment.weekdays()];
+                    moment.loadPersian({ dialect: "persian-modern" });
+                    const persianWeekdays = [...moment.weekdays()];
                     const saturday = persianWeekdays.pop();
                     persianWeekdays.unshift(saturday);
                     weekNames.value = persianWeekdays;
@@ -97,7 +96,7 @@ export default {
         };
         const calculateStartDay = (type) => {
             if (type === "shamsi") {
-                const startDay = jMoment(timestamp.value).startOf("jMonth").day();
+                const startDay = moment(timestamp.value).startOf("jMonth").day();
                 return (startDay + 1) % 7;
             } else if (type === "miladi") {
                 return moment(timestamp.value).startOf("month").day();
@@ -115,24 +114,24 @@ export default {
                 startDay: calculateStartDay(type),
                 days:
                     type === "shamsi"
-                        ? jMoment(timestamp.value).daysInMonth()
+                        ? moment(timestamp.value).daysInMonth()
                         : type === "miladi"
                         ? moment(timestamp.value).daysInMonth()
                         : moment(timestamp.value).daysInMonth(),
                 month:
                     type === "shamsi"
-                        ? jMoment(timestamp.value).jMonth()
+                        ? moment(timestamp.value).jMonth()
                         : type === "miladi"
                         ? moment(timestamp.value).month()
                         : moment(timestamp.value).month(),
                 year:
                     type === "shamsi"
-                        ? jMoment(timestamp.value).jYear()
+                        ? moment(timestamp.value).jYear()
                         : type === "miladi"
                         ? moment(timestamp.value).year()
                         : moment(timestamp.value).year(),
 
-                today: type === "shamsi" ? jMoment().jDate() : type === "miladi" ? moment().date() : moment().date(),
+                today: type === "shamsi" ? moment().jDate() : type === "miladi" ? moment().date() : moment().date(),
             });
 
             fullCalendarDays();
@@ -162,7 +161,7 @@ export default {
 
         const goPrevMonth = () => {
             if (selectedCalendarType.value === "shamsi") {
-                timestamp.value = jMoment(timestamp.value).subtract(1, "jMonth");
+                timestamp.value = moment(timestamp.value).subtract(1, "jMonth");
             } else {
                 timestamp.value = moment(timestamp.value).subtract(1, "month");
             }
@@ -171,7 +170,7 @@ export default {
 
         const goNextMonth = () => {
             if (selectedCalendarType.value === "shamsi") {
-                timestamp.value = jMoment(timestamp.value).add(1, "jMonth");
+                timestamp.value = moment(timestamp.value).add(1, "jMonth");
             } else {
                 timestamp.value = moment(timestamp.value).add(1, "month");
             }
@@ -190,7 +189,6 @@ export default {
             weekDays,
             calendarInfo,
             moment,
-            jMoment,
             timestamp,
             goNextMonth,
             goPrevMonth,
@@ -199,4 +197,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.buttons-wrapper {
+    width: 20%;
+    button {
+        background-color: transparent;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+}
+.calendar-container {
+    height: min-content;
+}
+</style>
