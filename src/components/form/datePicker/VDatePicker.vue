@@ -32,12 +32,13 @@
                         :key="dayIndex"
                         class="col d-flex align-items-center justify-content-center"
                         :class="{
-                            'text-danger': dayIndex === 6,
                             'border border-dark rounded':
                                 today.date === day && today.month === calendarInfo.month && today.year === calendarInfo.year,
                         }"
                     >
-                        <span v-if="day" @click="selectDate()">{{ day }}</span>
+                        <div v-if="day" class="cursor-pointer" @click="selectDate()">
+                            <VDate :day="day" :holiday="dayIndex === 6 ? true : false" />
+                        </div>
                         <span v-else class="empty-slot"></span>
                     </div>
                 </div>
@@ -50,7 +51,11 @@
 import { ref, onMounted, reactive, watch } from "vue";
 import moment from "moment-jalaali";
 import "moment-hijri";
+import VDate from "./VDate.vue";
 export default {
+    components: {
+        VDate,
+    },
     setup() {
         const selectedCalendarType = ref(null);
         const weekNames = ref([]);
@@ -197,6 +202,8 @@ export default {
             updateCalendar(selectedCalendarType.value);
         };
 
+        const selectDate = () => {};
+
         onMounted(() => {
             generateCalendar();
             selectedCalendarType.value = "miladi";
@@ -213,6 +220,7 @@ export default {
             goNextMonth,
             goPrevMonth,
             today,
+            selectDate,
         };
     },
 };
