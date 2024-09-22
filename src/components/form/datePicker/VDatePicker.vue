@@ -31,13 +31,15 @@
                     <div
                         v-for="(day, dayIndex) in week"
                         :key="dayIndex"
-                        class="col d-flex align-items-center justify-content-center"
+                        class="col d-flex align-items-center justify-content-center rounded"
                         :class="{
-                            'border border-dark rounded':
+                            'border border-dark ':
                                 today.date === day && today.month === calendarInfo.month && today.year === calendarInfo.year,
+                            'text-light bg-dark':
+                                pickedDate.day === day && pickedDate.month === calendarInfo.month && pickedDate.year === calendarInfo.year,
                         }"
                     >
-                        <div v-if="day" class="cursor-pointer" @click="selectDate()">
+                        <div v-if="day" class="cursor-pointer" @click="selectDate(day)">
                             <VDate :day="day" :holiday="dayIndex === 6 ? true : false" />
                         </div>
                         <span v-else class="empty-slot"></span>
@@ -64,6 +66,12 @@ export default {
         const weekNames = ref([]);
         const timestamp = ref(moment());
         const weekDays = ref([]);
+        const pickedDate = reactive({
+            type: null,
+            day: null,
+            month: null,
+            year: null,
+        });
 
         const calendarInfo = reactive({
             startDay: "",
@@ -217,7 +225,12 @@ export default {
                     : moment(timestamp.value).year(year).format();
         };
 
-        const selectDate = () => {};
+        const selectDate = (day) => {
+            pickedDate.type = selectedCalendarType.value;
+            pickedDate.day = day;
+            pickedDate.month = calendarInfo.month;
+            pickedDate.year = calendarInfo.year;
+        };
 
         onMounted(() => {
             generateCalendar();
@@ -237,6 +250,7 @@ export default {
             today,
             selectDate,
             handleYearSelection,
+            pickedDate,
         };
     },
 };
