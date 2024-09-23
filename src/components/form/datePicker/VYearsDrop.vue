@@ -1,12 +1,6 @@
 <template>
-    <div class="dropdown mx-3">
-        <button
-            class="btn btn-outline-secondary dropdown-toggle btn-sm"
-            type="button"
-            @click="toggleDropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-        ></button>
+    <div class="dropdown ml-3">
+        <button class="dropdown-toggle btn-sm" type="button" @click="toggleDropdown" aria-haspopup="true" aria-expanded="false"></button>
 
         <div
             class="dropdown-menu scrollable-dropdown"

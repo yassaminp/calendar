@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center flex-column justify-content-center p-3 rounded bg-light m-1 p-2 calendar-container">
         <div class="d-flex flex-column">
             <div class="mb-3 d-flex align-items-center justify-content-between">
-                <button type="button" class="btn btn-secondary btn-sm" @click="goToToday">برو به امروز</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" @click="goToToday">برو به امروز</button>
                 <select
                     name="calenderType"
                     class="form-select form-select-sm"
@@ -16,6 +16,7 @@
                 </select>
             </div>
             <div class="d-flex align-items-center justify-content-between mb-3 mx-2">
+                <button @click="goPrevMonth">&lt;</button>
                 <div class="d-flex align-items-center justify-content-between">
                     {{
                         selectedCalendarType === "shamsi"
@@ -27,11 +28,7 @@
                     - {{ calendarInfo.year }}
                     <VYearsDrop :calendarInfo="calendarInfo" @yearSelected="handleYearSelection" />
                 </div>
-                <div class="buttons-wrapper d-flex align-items-center justify-content-between">
-                    <button @click="goPrevMonth">&lt;</button>
-
-                    <button @click="goNextMonth">&gt;</button>
-                </div>
+                <button @click="goNextMonth">&gt;</button>
             </div>
 
             <ul class="d-flex align-items-center justify-content-between">
@@ -318,17 +315,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.buttons-wrapper {
-    width: 20%;
-    button {
-        background-color: transparent;
-        outline: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
-}
 .calendar-container {
     height: min-content;
 }
