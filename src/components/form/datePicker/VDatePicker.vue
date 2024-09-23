@@ -81,7 +81,7 @@ export default {
     setup() {
         const selectedCalendarType = ref(null);
         const weekNames = ref([]);
-        const timestamp = ref(moment());
+        const timestamp = ref();
         const weekDays = ref([]);
         const pickedDate = reactive({
             type: "",
@@ -132,7 +132,9 @@ export default {
 
                 case "ghamari": {
                     moment.locale("ar-sa");
-                    weekNames.value = hMoment.weekdays();
+
+                    hMoment.locale("ar-sa");
+                    weekNames.value = hMoment.iWeekdays();
 
                     today.date = hMoment(timestamp).iDate();
                     today.month = hMoment(timestamp).iMonth();
@@ -250,8 +252,7 @@ export default {
         };
 
         const goToToday = () => {
-            const today = moment();
-            timestamp.value = today;
+            timestamp.value = moment();
         };
 
         const handleYearSelection = (year) => {
