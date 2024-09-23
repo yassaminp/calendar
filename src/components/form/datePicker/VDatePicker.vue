@@ -84,7 +84,6 @@ export default {
         const timestamp = ref();
         const weekDays = ref([]);
         const pickedDate = reactive({
-            type: "",
             day: null,
             month: null,
             year: null,
@@ -112,7 +111,7 @@ export default {
             { year: 2024, month: 9, day: 20, type: "miladi" },
             { year: 2024, month: 11, day: 2, type: "miladi" },
         ]);
-        const birthday = ref({ month: 9, day: 29, type: "miladi" }, { month: 8, day: 8, type: "shamsi" });
+        const birthday = ref({ month: 9, day: 29, type: "miladi" });
 
         const generateCalendar = () => {
             switch (selectedCalendarType.value) {
@@ -180,6 +179,10 @@ export default {
         });
 
         const updateCalendar = (type) => {
+            pickedDate.day = null;
+            pickedDate.month = null;
+            pickedDate.year = null;
+
             Object.assign(calendarInfo, {
                 startDay: calculateStartDay(type),
                 days:
