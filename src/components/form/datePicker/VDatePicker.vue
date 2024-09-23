@@ -131,10 +131,8 @@ export default {
                 }
 
                 case "ghamari": {
-                    moment.locale("ar-sa");
-
-                    hMoment.locale("ar-sa");
-                    weekNames.value = hMoment.iWeekdays();
+                    const hijriWeekdays = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+                    weekNames.value = hijriWeekdays;
 
                     today.date = hMoment(timestamp).iDate();
                     today.month = hMoment(timestamp).iMonth();
